@@ -7,7 +7,7 @@ class SpeedReaderApp:
   def __init__(self, root):
     self.root = root
     self.root.title("Speed Reader")
-    self.root.configure(bg="#2E2E2E")
+    self.root.configure(bg="#1A1A2E")
 
     # Set size of window
     window_width = 800
@@ -48,11 +48,10 @@ class SpeedReaderApp:
     self.open_button = ttk.Button(self.frame, text="Open Text File", command=self.open_file)
     self.open_button.pack(pady=5)
 
-    self.speed_label = ttk.Label(self.frame, text="Speed: 300 ms per word", font=("Helvetica", 12))
+    self.speed_label = ttk.Label(self.frame, text="Speed: 300 ms per word", font=("Helvetica", 14))
     self.speed_label.pack(pady=5)
 
     self.speed_scale = ttk.Scale(self.frame, from_=100, to=1000, orient="horizontal", length=650, command=self.update_speed_label)
-    self.speed_scale.set(300)
     self.speed_scale.pack(pady=5)
 
     # Add incremental labels
@@ -60,7 +59,6 @@ class SpeedReaderApp:
     self.increment_frame.pack(pady=5)
 
     # Evenly spaced speed increments
-    self.speed_increment_labels = []
     increments = [100, 400, 700, 1000]
     positions = [0.08, 0.36, 0.64, 0.9] # Relative positions based on length
 
@@ -77,18 +75,30 @@ class SpeedReaderApp:
     style.map("Hover.TButton", background=[("active", "#3A506B")], relief=[("pressed", "flat"), ("active", "flat")], bordercolor=[("active", "#1A1A2E")], borderwidth=[("active", 1), ("pressed", 1)])
 
     # Display words per minute
-    self.wpm_label = ttk.Label(self.frame, text="200 words per minute", font=("Helvetica", 14), background="#1A1A2E", foreground="white")
-    self.wpm_label.pack(pady=30)
+    self.wpm_label = ttk.Label(self.frame, text=" words per minute", font=("Helvetica", 14), background="#1A1A2E", foreground="white")
+    self.wpm_label.pack(pady=(30, 15))
 
     # Display reading time estimate for 300 page book @ 300 words per page
-    self.book_time_label = ttk.Label(self.frame, text="Estimated time to read a 300-page book: 7 hours and 30 minutes", font=("Helvetica", 14), background="#1A1A2E", foreground="white")
-    self.book_time_label.pack(pady=(15, 2))
+    self.book_time_label = ttk.Label(self.frame, text="Estimated time to read a 300-page book: ", font=("Helvetica", 14), background="#1A1A2E", foreground="white")
+    self.book_time_label.pack(pady=(15, 0))
 
     self.time_estimate_explainer = ttk.Label(self.frame, text="Assuming an average of 300 words per page", font=("Helvetica", 10), background="#1A1A2E", foreground="#3A506B")
     self.time_estimate_explainer.pack(pady=0)
 
-    self.text = ""
+    self.text = self.load_default_text()
     self.running = False
+
+    # Initialize the scale without triggering the command
+    self.speed_scale.set(300)
+    # Manually update the labels
+    self.update_speed_label(300)
+
+  def load_default_text(self):
+    try:
+      with open('default_text.txt', 'r') as file:
+        return file.read()
+    except FileNotFoundError:
+      return "Default text file not found. Please open a text file to begin."
 
   def start(self):
     self.running = True
@@ -106,11 +116,11 @@ class SpeedReaderApp:
   def display_words(self):
     if self.text:
       words = self.text.split()
-      speed = self.speed_scale.get()
       for word in words:
         if not self.running:
           break
         self.label.config(text=word)
+        speed = self.speed_scale.get()
         self.root.update()
         time.sleep(speed / 1000)
       self.label.config(text="")
