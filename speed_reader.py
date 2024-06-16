@@ -26,10 +26,12 @@ class SpeedReaderApp:
 
     style = ttk.Style()
     style.theme_use('clam')
-    style.configure("TButton", background="#2E2E2E", foreground="white", font=("Helvetica", 12), padding=5)
-    style.configure("TLabel", background="#2E2E2E", foreground="white", font=("Helvetica", 48))
-    style.configure("TScale", background="#2E2E2E")
-    style.configure("TFrame", background="#2E2E2E")
+    style.configure("TButton", background="#1A1A2E", foreground="white", font=("Helvetica", 12), padding=5)
+    style.map("TButton", background=[("active", "#3A506B"), ("hover", "#3A506B")], relief=[("pressed", "flat"), ("active", "flat")])
+
+    style.configure("TLabel", background="#1A1A2E", foreground="white", font=("Helvetica", 48))
+    style.configure("TScale", background="#1A1A2E")
+    style.configure("TFrame", background="#1A1A2E")
 
     self.frame = ttk.Frame(root, padding=10)
     self.frame.pack(fill="both", expand=True)
@@ -68,10 +70,10 @@ class SpeedReaderApp:
       button.bind("<Enter>", lambda e: e.widget.configure(style="Hover.TButton"))
       button.bind("<Leave>", lambda e: e.widget.configure(style="Increment.TButton"))
 
-    style.configure("Increment.TButton", background="#2E2E2E", foreground="white", borderwidth=0, relief="flat")
-    style.map("Increment.TButton", background=[("active", "#2E2E2E")], relief=[("pressed", "flat"), ("active", "flat")], bordercolor=[("active", "#2E2E2E")], borderwidth=[("active", 0), ("pressed", 0)])
-    style.configure("Hover.TButton", background="#2E2E2E", foreground="white", borderwidth=0, relief="flat", cursor="hand2")
-    style.map("Hover.TButton", background=[("active", "#3A3A3A")], relief=[("pressed", "flat"), ("active", "flat")], bordercolor=[("active", "#2E2E2E")], borderwidth=[("active", 0), ("pressed", 0)])
+    style.configure("Increment.TButton", background="#1A1A2E", foreground="white", borderwidth=0, relief="flat")
+    style.map("Increment.TButton", background=[("active", "#1A1A2E")], relief=[("pressed", "flat"), ("active", "flat")], bordercolor=[("active", "#1A1A2E")], borderwidth=[("active", 1), ("pressed", 1)])
+    style.configure("Hover.TButton", background="#1A1A2E", foreground="white", borderwidth=0, relief="flat", cursor="hand2")
+    style.map("Hover.TButton", background=[("active", "#3A506B")], relief=[("pressed", "flat"), ("active", "flat")], bordercolor=[("active", "#1A1A2E")], borderwidth=[("active", 1), ("pressed", 1)])
 
     self.text = ""
     self.running = False
