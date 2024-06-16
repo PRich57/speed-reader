@@ -9,15 +9,19 @@ class SpeedReaderApp:
     self.root.title("Speed Reader")
     self.root.configure(bg="#2E2E2E")
 
+    # Set size of window
     window_width = 800
     window_height = 600
 
+    # Get screen dimension
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
 
+    # Find center point
     center_x = int(screen_width/2 - window_width/2)
     center_y = int(screen_height/2 - window_height/2)
 
+    # Set position of window to center of screen
     root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
 
     style = ttk.Style()
@@ -45,9 +49,22 @@ class SpeedReaderApp:
     self.speed_label = ttk.Label(self.frame, text="Speed: 300 ms per word", font=("Helvetica", 12))
     self.speed_label.pack(pady=5)
 
-    self.speed_scale = ttk.Scale(self.frame, from_=100, to=1000, orient="horizontal", command=self.update_speed_label)
+    self.speed_scale = ttk.Scale(self.frame, from_=100, to=1000, orient="horizontal", length=650, command=self.update_speed_label)
     self.speed_scale.set(300)
     self.speed_scale.pack(pady=5)
+
+    # Add incremental labels
+    self.increment_frame = ttk.Frame(self.frame, width=650, height=30)
+    self.increment_frame.pack(pady=5)
+
+    # Evenly spaced speed increments
+    self.speed_increment_labels = []
+    increments = [100, 400, 700, 1000]
+    positions = [0.04, 0.33, 0.66, 0.96] # Relative positions based on length
+
+    for i, (increment, position) in enumerate(zip(increments, positions)):
+      label = ttk.Label(self.increment_frame, text=f"{increment} ms", font=("Helvetica", 10), background="#2E2E2E", foreground="white")
+      label.place(relx=position, rely=0.5, anchor='center')
 
     self.text = ""
     self.running = False
