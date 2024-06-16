@@ -26,7 +26,7 @@ class SpeedReaderApp:
 
     style = ttk.Style()
     style.theme_use('clam')
-    style.configure("TButton", background="#3A3A3A", foreground="white", font=("Helvetica", 12), padding=10)
+    style.configure("TButton", background="#2E2E2E", foreground="white", font=("Helvetica", 12), padding=5)
     style.configure("TLabel", background="#2E2E2E", foreground="white", font=("Helvetica", 48))
     style.configure("TScale", background="#2E2E2E")
     style.configure("TFrame", background="#2E2E2E")
@@ -54,17 +54,24 @@ class SpeedReaderApp:
     self.speed_scale.pack(pady=5)
 
     # Add incremental labels
-    self.increment_frame = ttk.Frame(self.frame, width=650, height=30)
+    self.increment_frame = ttk.Frame(self.frame, width=750, height=30)
     self.increment_frame.pack(pady=5)
 
     # Evenly spaced speed increments
     self.speed_increment_labels = []
     increments = [100, 400, 700, 1000]
-    positions = [0.04, 0.33, 0.66, 0.96] # Relative positions based on length
+    positions = [0.08, 0.36, 0.64, 0.9] # Relative positions based on length
 
-    for i, (increment, position) in enumerate(zip(increments, positions)):
-      label = ttk.Label(self.increment_frame, text=f"{increment} ms", font=("Helvetica", 10), background="#2E2E2E", foreground="white")
-      label.place(relx=position, rely=0.5, anchor='center')
+    for increment, position in zip(increments, positions):
+      button = ttk.Button(self.increment_frame, text=f"{increment} ms", command=lambda inc=increment: self.set_speed(inc), style="Increment.TButton")
+      button.place(relx=position, rely=0.5, anchor='center')
+      button.bind("<Enter>", lambda e: e.widget.configure(style="Hover.TButton"))
+      button.bind("<Leave>", lambda e: e.widget.configure(style="Increment.TButton"))
+
+    style.configure("Increment.TButton", background="#2E2E2E", foreground="white", borderwidth=0, relief="flat")
+    style.map("Increment.TButton", background=[("active", "#2E2E2E")], relief=[("pressed", "flat"), ("active", "flat")], bordercolor=[("active", "#2E2E2E")], borderwidth=[("active", 0), ("pressed", 0)])
+    style.configure("Hover.TButton", background="#2E2E2E", foreground="white", borderwidth=0, relief="flat", cursor="hand2")
+    style.map("Hover.TButton", background=[("active", "#3A3A3A")], relief=[("pressed", "flat"), ("active", "flat")], bordercolor=[("active", "#2E2E2E")], borderwidth=[("active", 0), ("pressed", 0)])
 
     self.text = ""
     self.running = False
@@ -96,6 +103,10 @@ class SpeedReaderApp:
 
   def update_speed_label(self, value):
     self.speed_label.config(text=f"Speed: {int(float(value))} ms per word")
+
+  def set_speed(self, value):
+    self.speed_scale.set(value)
+    self.update_speed_label(value)
 
 if __name__ == "__main__":
   root = tk.Tk()
