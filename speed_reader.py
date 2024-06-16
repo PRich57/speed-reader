@@ -70,10 +70,22 @@ class SpeedReaderApp:
       button.bind("<Enter>", lambda e: e.widget.configure(style="Hover.TButton"))
       button.bind("<Leave>", lambda e: e.widget.configure(style="Increment.TButton"))
 
+    # Style the increment buttons
     style.configure("Increment.TButton", background="#1A1A2E", foreground="white", borderwidth=0, relief="flat")
     style.map("Increment.TButton", background=[("active", "#1A1A2E")], relief=[("pressed", "flat"), ("active", "flat")], bordercolor=[("active", "#1A1A2E")], borderwidth=[("active", 1), ("pressed", 1)])
     style.configure("Hover.TButton", background="#1A1A2E", foreground="white", borderwidth=0, relief="flat", cursor="hand2")
     style.map("Hover.TButton", background=[("active", "#3A506B")], relief=[("pressed", "flat"), ("active", "flat")], bordercolor=[("active", "#1A1A2E")], borderwidth=[("active", 1), ("pressed", 1)])
+
+    # Display words per minute
+    self.wpm_label = ttk.Label(self.frame, text="200 words per minute", font=("Helvetica", 14), background="#1A1A2E", foreground="white")
+    self.wpm_label.pack(pady=30)
+
+    # Display reading time estimate for 300 page book @ 300 words per page
+    self.book_time_label = ttk.Label(self.frame, text="Estimated time to read a 300-page book: 7 hours and 30 minutes", font=("Helvetica", 14), background="#1A1A2E", foreground="white")
+    self.book_time_label.pack(pady=(15, 2))
+
+    self.time_estimate_explainer = ttk.Label(self.frame, text="Assuming an average of 300 words per page", font=("Helvetica", 10), background="#1A1A2E", foreground="#3A506B")
+    self.time_estimate_explainer.pack(pady=0)
 
     self.text = ""
     self.running = False
@@ -105,6 +117,15 @@ class SpeedReaderApp:
 
   def update_speed_label(self, value):
     self.speed_label.config(text=f"Speed: {int(float(value))} ms per word")
+    self.update_wpm_and_book_time(int(float(value)))
+
+  def update_wpm_and_book_time(self, ms_per_word):
+    words_per_minute = 60000 // ms_per_word
+    self.wpm_label.config(text=f"{words_per_minute} words per minute")
+    minutes_to_read_book = 90000 // words_per_minute
+    hours = minutes_to_read_book // 60
+    minutes = minutes_to_read_book % 60
+    self.book_time_label.config(text=f"Estimated time to read a 300-page book: {hours} hours and {minutes} minutes")
 
   def set_speed(self, value):
     self.speed_scale.set(value)
